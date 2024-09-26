@@ -131,7 +131,12 @@ export class StudentService {
     return null;
   }
 
-  async login(student: Student) {
+  async login(loginDto: LoginStudentDto) {
+    const student = await this.validateStudent(loginDto);
+    if (!student) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
     const payload = {
       email: student.email,
       sub: student.id,

@@ -1,6 +1,9 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards, Request, Body, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { StudentService } from './student.service';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { LoginStudentDto } from './dto/login-student.dto';
+import { RegisterStudentDto } from './dto/register-student.dto';
 
 @ApiTags('students') // Group in Swagger UI
 @Controller('students')
@@ -52,5 +55,30 @@ export class StudentController {
   @ApiResponse({ status: 404, description: 'External student not found' })
   async findExternalStudent(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.findExternalStudent(id);
+  }
+
+  @Post('register')
+  @ApiOperation({ summary: 'Register a new student' })
+  @ApiResponse({ status: 201, description: 'Student registered successfully.' })
+  @ApiResponse({ status: 400, description: 'Failed to register student.' })
+  async registerStudent(@Body() registerStudentDto: RegisterStudentDto) {
+    return this.studentService.registerStudent(registerStudentDto);
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login a student' })
+  @ApiResponse({ status: 200, description: 'Student logged in successfully.' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials.' })
+  async login(@Body() loginStudentDto: LoginStudentDto) {
+    return this.studentService.login(loginStudentDto);
+  }
+
+  @ApiOperation({
+    summary: "User Profile"
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get("profile")
+  getProfile(@Request() req) {
+    return req.user;
   }
 }
