@@ -1,4 +1,15 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards, Request, Body, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+  Request,
+  Body,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { StudentService } from './student.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
@@ -74,11 +85,39 @@ export class StudentController {
   }
 
   @ApiOperation({
-    summary: "User Profile"
+    summary: 'User Profile',
   })
   @UseGuards(JwtAuthGuard)
-  @Get("profile")
+  @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Put(':id/profile')
+  @ApiOperation({ summary: 'Update student profile' })
+  @ApiResponse({ status: 200, description: 'Profile updated successfully.' })
+  @ApiResponse({ status: 404, description: 'Student not found.' })
+  async updateProfile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStudentDto: any,
+  ) {
+    return this.studentService.updateProfile(id, updateStudentDto);
+  }
+
+  @Get('pagination')
+  @ApiOperation({ summary: 'Retrieve students with pagination' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved students.' })
+  async paginationStudents(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.studentService.paginationStudents(page, limit);
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Search for students' })
+  @ApiResponse({ status: 200, description: 'Students found.' })
+  async searchStudents(@Query('query') query: string) {
+    return this.studentService.searchStudents(query);
   }
 }

@@ -9,7 +9,6 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterStudentDto } from './dto/register-student.dto';
 import { LoginStudentDto } from './dto/login-student.dto';
-import { Student } from '@prisma/client';
 
 @Injectable()
 export class StudentService {
@@ -145,5 +144,58 @@ export class StudentService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async updateProfile(id: number, updateStudentDto: any) {
+    const existingStudent = await this.prismaService.student.findUnique({
+      where: { id },
+    });
+
+    if (!existingStudent) {
+      throw new NotFoundException('Student not found');
+    }
+
+    return await this.prismaService.student.update({
+      where: { id },
+      data: {
+        ...updateStudentDto,
+      },
+    });
+  }
+
+  async paginationStudents(page: number, limit: number) {
+    const students = await this.prismaService.student.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const totalStudents = await this.prismaService.student.count();
+
+    return {
+      data: students,
+      total: totalStudents,
+      page,
+      limit,
+    };
+  }
+
+  async searchStudents(query: string) {
+    const students = await this.prismaService.student.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+          { lastName: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+    });
+
+    if (students.length === 0) {
+      throw new NotFoundException(
+        'No students found matching the search criteria',
+      );
+    }
+
+    return students;
   }
 }
