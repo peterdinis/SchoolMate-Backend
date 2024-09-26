@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { StudentService } from './student.service';
 import { StudentController } from './student.controller';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { StudentController } from './student.controller';
       signOptions: { expiresIn: '1h' }, // token expiry time
     }),
   ],
-  providers: [StudentService],
+  providers: [StudentService, JwtStrategy],
   controllers: [StudentController],
 })
 export class StudentModule {}
