@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('School Mate API')
     .setDescription('Documentation for school mate API')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);

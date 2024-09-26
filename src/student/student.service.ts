@@ -1,9 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterStudentDto } from './dto/register-student.dto';
+import { LoginStudentDto } from './dto/login-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async findAllStudent() {
     const allStudents = await this.prismaService.student.findMany();
@@ -82,5 +95,108 @@ export class StudentService {
     }
 
     return oneExpelledStudent;
+  }
+
+  async registerStudent(studentDto: RegisterStudentDto) {
+    const hashedPassword = await bcrypt.hash(studentDto.password, 10);
+
+    const newStudent = await this.prismaService.student.create({
+      data: {
+        ...studentDto,
+      },
+    });
+
+    if (!newStudent) {
+      throw new BadRequestException('Failed to create new student');
+    }
+
+    if (hashedPassword !== studentDto.password) {
+      throw new ForbiddenException('Password does not match');
+    }
+
+    return newStudent;
+  }
+
+  async validateStudent(loginDto: LoginStudentDto) {
+    const student = await this.prismaService.student.findUnique({
+      where: { email: loginDto.email },
+    });
+    if (
+      student &&
+      (await bcrypt.compare(loginDto.password, student.password))
+    ) {
+      const { password, ...result } = student;
+      return result;
+    }
+    return null;
+  }
+
+  async login(loginDto: LoginStudentDto) {
+    const student = await this.validateStudent(loginDto);
+    if (!student) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    const payload = {
+      email: student.email,
+      sub: student.id,
+      role: student.role,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async updateProfile(id: number, updateStudentDto: UpdateStudentDto) {
+    const existingStudent = await this.prismaService.student.findUnique({
+      where: { id },
+    });
+
+    if (!existingStudent) {
+      throw new NotFoundException('Student not found');
+    }
+
+    return await this.prismaService.student.update({
+      where: { id },
+      data: {
+        ...updateStudentDto,
+      },
+    });
+  }
+
+  async paginationStudents(page: number, limit: number) {
+    const students = await this.prismaService.student.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const totalStudents = await this.prismaService.student.count();
+
+    return {
+      data: students,
+      total: totalStudents,
+      page,
+      limit,
+    };
+  }
+
+  async searchStudents(query: string) {
+    const students = await this.prismaService.student.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+          { lastName: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+    });
+
+    if (students.length === 0) {
+      throw new NotFoundException(
+        'No students found matching the search criteria',
+      );
+    }
+
+    return students;
   }
 }
