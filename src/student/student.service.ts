@@ -14,6 +14,20 @@ export class StudentService {
         return allStudents;
     }
 
+    async findAllExternalStudents() {
+        const externalStudents = await this.prismaService.student.findMany({
+            where: {
+                isExternal: true
+            }
+        });
+
+        if(!externalStudents) {
+            throw new NotFoundException("No external students found");
+        }
+
+        return externalStudents;
+    }
+
     async findOneStudent(id: number) {
         const findStudent = await this.prismaService.student.findFirst({
             where: {
@@ -26,6 +40,21 @@ export class StudentService {
         }
 
         return findStudent;
+    }
+
+    async findExternalDStudent(id: number) {
+        const oneExternalStudent = await this.prismaService.student.findFirst({
+            where: {
+                id,
+                isExternal: true
+            }
+        });
+
+        if(!oneExternalStudent) {
+            throw new NotFoundException("No external student with this id exists");
+        }
+
+        return oneExternalStudent;
     }
  
 }
