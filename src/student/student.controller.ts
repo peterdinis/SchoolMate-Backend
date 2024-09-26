@@ -15,8 +15,9 @@ import { StudentService } from './student.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { LoginStudentDto } from './dto/login-student.dto';
 import { RegisterStudentDto } from './dto/register-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
-@ApiTags('students') // Group in Swagger UI
+@ApiTags('Students')
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -99,7 +100,7 @@ export class StudentController {
   @ApiResponse({ status: 404, description: 'Student not found.' })
   async updateProfile(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateStudentDto: any,
+    @Body() updateStudentDto: UpdateStudentDto,
   ) {
     return this.studentService.updateProfile(id, updateStudentDto);
   }

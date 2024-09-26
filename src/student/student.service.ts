@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterStudentDto } from './dto/register-student.dto';
 import { LoginStudentDto } from './dto/login-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -146,7 +147,7 @@ export class StudentService {
     };
   }
 
-  async updateProfile(id: number, updateStudentDto: any) {
+  async updateProfile(id: number, updateStudentDto: UpdateStudentDto) {
     const existingStudent = await this.prismaService.student.findUnique({
       where: { id },
     });
