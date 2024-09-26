@@ -41,14 +41,24 @@ describe('StudentController', () => {
           provide: StudentService,
           useValue: {
             findAllStudent: jest.fn().mockResolvedValue(mockStudents),
-            findAllExternalStudents: jest.fn().mockResolvedValue(mockStudents.filter(student => student.isExternal)),
+            findAllExternalStudents: jest
+              .fn()
+              .mockResolvedValue(
+                mockStudents.filter((student) => student.isExternal),
+              ),
             findOneStudent: jest.fn().mockImplementation((id: number) => {
-              const student = mockStudents.find(student => student.id === id);
-              return student ? Promise.resolve(student) : Promise.reject(new NotFoundException());
+              const student = mockStudents.find((student) => student.id === id);
+              return student
+                ? Promise.resolve(student)
+                : Promise.reject(new NotFoundException());
             }),
             findExternalDStudent: jest.fn().mockImplementation((id: number) => {
-              const student = mockStudents.find(student => student.id === id && student.isExternal);
-              return student ? Promise.resolve(student) : Promise.reject(new NotFoundException());
+              const student = mockStudents.find(
+                (student) => student.id === id && student.isExternal,
+              );
+              return student
+                ? Promise.resolve(student)
+                : Promise.reject(new NotFoundException());
             }),
           },
         },
@@ -73,14 +83,20 @@ describe('StudentController', () => {
 
     it('should throw NotFoundException when no students are found', async () => {
       jest.spyOn(service, 'findAllStudent').mockResolvedValueOnce([]);
-      await expect(controller.findAllStudents()).rejects.toThrow(NotFoundException);
+      await expect(controller.findAllStudents()).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('findAllExternalStudents', () => {
     it('should return all external students', async () => {
-      const externalStudents = mockStudents.filter(student => student.isExternal);
-      jest.spyOn(service, 'findAllExternalStudents').mockResolvedValueOnce(externalStudents);
+      const externalStudents = mockStudents.filter(
+        (student) => student.isExternal,
+      );
+      jest
+        .spyOn(service, 'findAllExternalStudents')
+        .mockResolvedValueOnce(externalStudents);
       const result = await controller.findAllExternalStudents();
       expect(result).toEqual(externalStudents);
       expect(service.findAllExternalStudents).toHaveBeenCalled();
@@ -88,7 +104,9 @@ describe('StudentController', () => {
 
     it('should throw NotFoundException when no external students are found', async () => {
       jest.spyOn(service, 'findAllExternalStudents').mockResolvedValueOnce([]);
-      await expect(controller.findAllExternalStudents()).rejects.toThrow(NotFoundException);
+      await expect(controller.findAllExternalStudents()).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -103,19 +121,29 @@ describe('StudentController', () => {
 
     it('should throw NotFoundException if student is not found', async () => {
       const nonExistentId = faker.number.int({ min: 1001, max: 2000 });
-      jest.spyOn(service, 'findOneStudent').mockRejectedValueOnce(new NotFoundException());
-      await expect(controller.findOneStudent(nonExistentId)).rejects.toThrow(NotFoundException);
+      jest
+        .spyOn(service, 'findOneStudent')
+        .mockRejectedValueOnce(new NotFoundException());
+      await expect(controller.findOneStudent(nonExistentId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('findExternalStudent', () => {
     it('should return an external student by ID', async () => {
-      const externalStudent = mockStudents.find(student => student.isExternal);
+      const externalStudent = mockStudents.find(
+        (student) => student.isExternal,
+      );
       if (externalStudent) {
-        jest.spyOn(service, 'findExternalDStudent').mockResolvedValueOnce(externalStudent);
+        jest
+          .spyOn(service, 'findExternalDStudent')
+          .mockResolvedValueOnce(externalStudent);
         const result = await controller.findExternalStudent(externalStudent.id);
         expect(result).toEqual(externalStudent);
-        expect(service.findExternalDStudent).toHaveBeenCalledWith(externalStudent.id);
+        expect(service.findExternalDStudent).toHaveBeenCalledWith(
+          externalStudent.id,
+        );
       } else {
         throw new Error('No external student available for testing');
       }
@@ -123,8 +151,12 @@ describe('StudentController', () => {
 
     it('should throw NotFoundException if external student is not found', async () => {
       const nonExistentId = faker.number.int({ min: 1001, max: 2000 });
-      jest.spyOn(service, 'findExternalDStudent').mockRejectedValueOnce(new NotFoundException());
-      await expect(controller.findExternalStudent(nonExistentId)).rejects.toThrow(NotFoundException);
+      jest
+        .spyOn(service, 'findExternalDStudent')
+        .mockRejectedValueOnce(new NotFoundException());
+      await expect(
+        controller.findExternalStudent(nonExistentId),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

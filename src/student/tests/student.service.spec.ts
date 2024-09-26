@@ -5,12 +5,12 @@ import { faker } from '@faker-js/faker';
 import { StudentService } from '../student.service';
 
 enum Role {
-    STUDENT = 'STUDENT',
-    TEACHER = 'TEACHER',
-    ADMIN = 'ADMIN',
-    PARENT = 'PARENT',
-    NOROLE = 'NOROLE',
-  }
+  STUDENT = 'STUDENT',
+  TEACHER = 'TEACHER',
+  ADMIN = 'ADMIN',
+  PARENT = 'PARENT',
+  NOROLE = 'NOROLE',
+}
 
 describe('StudentService', () => {
   let service: StudentService;
@@ -30,7 +30,6 @@ describe('StudentService', () => {
     updatedAt: faker.date.recent(),
   }));
 
-
   // Filter external students for specific tests
   const externalStudents = mockStudents.filter((student) => student.isExternal);
 
@@ -45,9 +44,13 @@ describe('StudentService', () => {
               findMany: jest.fn().mockResolvedValue(mockStudents),
               findFirst: jest.fn().mockImplementation((query) => {
                 const student = mockStudents.find(
-                  (s) => s.id === query.where.id && s.isExternal === query.where.isExternal
+                  (s) =>
+                    s.id === query.where.id &&
+                    s.isExternal === query.where.isExternal,
                 );
-                return student ? Promise.resolve(student) : Promise.resolve(null);
+                return student
+                  ? Promise.resolve(student)
+                  : Promise.resolve(null);
               }),
             },
           },
@@ -79,27 +82,35 @@ describe('StudentService', () => {
 
   describe('findAllExternalStudents', () => {
     it('should return all external students', async () => {
-      jest.spyOn(prismaService.student, 'findMany').mockResolvedValueOnce(externalStudents);
+      jest
+        .spyOn(prismaService.student, 'findMany')
+        .mockResolvedValueOnce(externalStudents);
       const result = await service.findAllExternalStudents();
       expect(result).toEqual(externalStudents);
     });
 
     it('should throw NotFoundException when no external students are found', async () => {
       jest.spyOn(prismaService.student, 'findMany').mockResolvedValueOnce([]);
-      await expect(service.findAllExternalStudents()).rejects.toThrow(NotFoundException);
+      await expect(service.findAllExternalStudents()).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('findOneStudent', () => {
     it('should return a student by id', async () => {
       const student = mockStudents[0];
-      jest.spyOn(prismaService.student, 'findFirst').mockResolvedValueOnce(student);
+      jest
+        .spyOn(prismaService.student, 'findFirst')
+        .mockResolvedValueOnce(student);
       const result = await service.findOneStudent(student.id);
       expect(result).toEqual(student);
     });
 
     it('should throw NotFoundException if student is not found', async () => {
-      jest.spyOn(prismaService.student, 'findFirst').mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.student, 'findFirst')
+        .mockResolvedValueOnce(null);
       await expect(service.findOneStudent(faker.number.int())).rejects.toThrow(
         NotFoundException,
       );
@@ -109,16 +120,20 @@ describe('StudentService', () => {
   describe('findExternalDStudent', () => {
     it('should return an external student by id', async () => {
       const student = externalStudents[0];
-      jest.spyOn(prismaService.student, 'findFirst').mockResolvedValueOnce(student);
+      jest
+        .spyOn(prismaService.student, 'findFirst')
+        .mockResolvedValueOnce(student);
       const result = await service.findExternalDStudent(student.id);
       expect(result).toEqual(student);
     });
 
     it('should throw NotFoundException if external student is not found', async () => {
-      jest.spyOn(prismaService.student, 'findFirst').mockResolvedValueOnce(null);
-      await expect(service.findExternalDStudent(faker.number.int())).rejects.toThrow(
-        NotFoundException,
-      );
+      jest
+        .spyOn(prismaService.student, 'findFirst')
+        .mockResolvedValueOnce(null);
+      await expect(
+        service.findExternalDStudent(faker.number.int()),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

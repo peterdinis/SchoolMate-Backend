@@ -12,7 +12,7 @@ import { StudentModule } from 'src/student/student.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    StudentModule
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
