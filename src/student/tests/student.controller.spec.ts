@@ -4,20 +4,34 @@ import { faker } from '@faker-js/faker';
 import { StudentController } from '../student.controller';
 import { StudentService } from '../student.service';
 
+// Enum for roles
+enum Role {
+  STUDENT = 'STUDENT',
+  TEACHER = 'TEACHER',
+  ADMIN = 'ADMIN',
+  PARENT = 'PARENT',
+  NOROLE = 'NOROLE',
+}
+
+// Mock students array generation
+const createMockStudent = () => ({
+  id: faker.number.int({ min: 1, max: 1000 }),
+  name: faker.person.firstName(),
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+  class: '4A',
+  telephone: faker.phone.number(),
+  isExternal: faker.datatype.boolean(),
+  role: faker.helpers.arrayElement(Object.values(Role)), // Randomly assign a role
+  createdAt: faker.date.past(), // Add createdAt
+  updatedAt: faker.date.recent(), // Add updatedAt
+});
+
 describe('StudentController', () => {
   let controller: StudentController;
   let service: StudentService;
 
-  const mockStudents = Array.from({ length: 5 }, () => ({
-    id: faker.number.int({ min: 1, max: 1000 }),
-    name: faker.person.firstName(),
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-    class: '4A',
-    role: 'STUDENT',
-    telephone: faker.phone.number(),
-    isExternal: faker.datatype.boolean(),
-  }));
+  const mockStudents = Array.from({ length: 5 }, createMockStudent);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -97,10 +111,14 @@ describe('StudentController', () => {
   describe('findExternalStudent', () => {
     it('should return an external student by ID', async () => {
       const externalStudent = mockStudents.find(student => student.isExternal);
-      jest.spyOn(service, 'findExternalDStudent').mockResolvedValueOnce(externalStudent);
-      const result = await controller.findExternalStudent(externalStudent.id);
-      expect(result).toEqual(externalStudent);
-      expect(service.findExternalDStudent).toHaveBeenCalledWith(externalStudent.id);
+      if (externalStudent) {
+        jest.spyOn(service, 'findExternalDStudent').mockResolvedValueOnce(externalStudent);
+        const result = await controller.findExternalStudent(externalStudent.id);
+        expect(result).toEqual(externalStudent);
+        expect(service.findExternalDStudent).toHaveBeenCalledWith(externalStudent.id);
+      } else {
+        throw new Error('No external student available for testing');
+      }
     });
 
     it('should throw NotFoundException if external student is not found', async () => {
