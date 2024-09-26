@@ -1,7 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { RegisterStudentDto } from './dto/register-student.dto';
+import { LoginStudentDto } from './dto/login-student.dto';
+import { Student } from '@prisma/client';
 
 @Injectable()
 export class StudentService {
@@ -87,5 +95,50 @@ export class StudentService {
     }
 
     return oneExpelledStudent;
+  }
+
+  async registerStudent(studentDto: RegisterStudentDto) {
+    const hashedPassword = await bcrypt.hash(studentDto.password, 10);
+
+    const newStudent = await this.prismaService.student.create({
+      data: {
+        ...studentDto,
+      },
+    });
+
+    if (!newStudent) {
+      throw new BadRequestException('Failed to create new student');
+    }
+
+    if (hashedPassword !== studentDto.password) {
+      throw new ForbiddenException('Password does not match');
+    }
+
+    return newStudent;
+  }
+
+  async validateStudent(loginDto: LoginStudentDto) {
+    const student = await this.prismaService.student.findUnique({
+      where: { email: loginDto.email },
+    });
+    if (
+      student &&
+      (await bcrypt.compare(loginDto.password, student.password))
+    ) {
+      const { password, ...result } = student;
+      return result;
+    }
+    return null;
+  }
+
+  async login(student: Student) {
+    const payload = {
+      email: student.email,
+      sub: student.id,
+      role: student.role,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
