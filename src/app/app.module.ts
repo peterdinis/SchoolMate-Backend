@@ -14,7 +14,7 @@ import { NoteModule } from 'src/note/note.module';
       envFilePath: '.env',
     }),
     StudentModule,
-    NoteModule
+    NoteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
