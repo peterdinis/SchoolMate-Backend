@@ -38,6 +38,6 @@ export class StudentController {
     @ApiResponse({ status: 200, description: 'External student found.' })
     @ApiResponse({ status: 404, description: 'External student not found' })
     async findExternalStudent(@Param('id', ParseIntPipe) id: number) {
-        return this.studentService.findExternalDStudent(id);
+        return this.studentService.findExternalStudent(id);
     }
 }

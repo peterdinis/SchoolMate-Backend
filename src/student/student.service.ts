@@ -42,7 +42,7 @@ export class StudentService {
         return findStudent;
     }
 
-    async findExternalDStudent(id: number) {
+    async findExternalStudent(id: number) {
         const oneExternalStudent = await this.prismaService.student.findFirst({
             where: {
                 id,
