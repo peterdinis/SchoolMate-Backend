@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
@@ -106,7 +106,9 @@ export class ClassService {
     );
 
     if (!studentExists) {
-      throw new NotFoundException(`Student with ID ${studentId} is not in the class`);
+      throw new NotFoundException(
+        `Student with ID ${studentId} is not in the class`,
+      );
     }
 
     return await this.prismaService.class.update({
