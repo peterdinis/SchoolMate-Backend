@@ -18,7 +18,7 @@ import { AssigmentModule } from 'src/assigment/assigment.module';
     StudentModule,
     NoteModule,
     ClassModule,
-    AssigmentModule
+    AssigmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
