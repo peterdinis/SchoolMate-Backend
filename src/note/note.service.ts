@@ -112,10 +112,8 @@ export class NoteService {
     }
   }
 
-  async paginatedStudentNotes(
-    paginationDto: PaginationNoteDto
-  ) {
-    const skip = (paginationDto.page - 1) *paginationDto. pageSize;
+  async paginatedStudentNotes(paginationDto: PaginationNoteDto) {
+    const skip = (paginationDto.page - 1) * paginationDto.pageSize;
     const [notes, totalCount] = await Promise.all([
       this.prismaService.note.findMany({
         where: { studentId: paginationDto.studentId },
