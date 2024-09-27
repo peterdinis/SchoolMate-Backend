@@ -22,13 +22,23 @@ enum Role {
 }
 
 model Note {
-  id         Int      @id @default(autoincrement())
-  name       String
-  content    String
-  studentId  Int
-  student    Student @relation(fields: [studentId], references: [id], onDelete: NoAction)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String
+  studentId Int
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: NoAction)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Class {
+  id        Int       @id @default(autoincrement())
+  name      String
+  students  Student[]
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  teacherId Int       @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 }
 
 model Student {
@@ -37,7 +47,8 @@ model Student {
   lastName   String
   email      String   @unique
   password   String
-  class      String?
+  classId    Int?
+  class      Class?   @relation(fields: [classId], references: [id])
   telephone  String?
   sex        String
   isExternal Boolean? @default(false)
@@ -55,6 +66,7 @@ model Teacher {
   password  String
   telephone String?
   hasClass  Boolean  @default(true)
+  class     Class? // A teacher can be assigned to one class
   role      Role     @default(TEACHER)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
