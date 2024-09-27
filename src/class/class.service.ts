@@ -9,14 +9,18 @@ import { AssignTeacherDto } from './dto/assign-teacher-to-class.dto';
 export class ClassService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  // Display all classes
   async displayAllClasses() {
-    return await this.prismaService.class.findMany({
+    const classes = await this.prismaService.class.findMany({
       include: { students: true, teacher: true },
     });
+
+    if (!classes) {
+      throw new NotFoundException('No classes was created');
+    }
+
+    return classes;
   }
 
-  // Find one class by ID
   async findOneClass(id: number) {
     const classData = await this.prismaService.class.findUnique({
       where: { id },
@@ -30,7 +34,6 @@ export class ClassService {
     return classData;
   }
 
-  // Create a new class
   async createClass(createClassDto: CreateClassDto) {
     const { name, teacherId } = createClassDto;
 
@@ -50,11 +53,9 @@ export class ClassService {
     });
   }
 
-  // Add students to a class
   async addStudentsToClass(addStudentsDto: AddStudentsToClassDto) {
     const { classId, studentIds } = addStudentsDto;
 
-    // Check if class exists
     const classData = await this.prismaService.class.findUnique({
       where: { id: classId },
     });
@@ -73,7 +74,6 @@ export class ClassService {
     });
   }
 
-  // Update class details
   async updateClass(id: number, updateClassDto: UpdateClassDto) {
     const classData = await this.prismaService.class.findUnique({
       where: { id },
@@ -89,9 +89,7 @@ export class ClassService {
     });
   }
 
-  // Remove a student from a class
   async removeStudentFromClass(classId: number, studentId: number) {
-    // Check if class and student exist
     const classData = await this.prismaService.class.findUnique({
       where: { id: classId },
       include: { students: true },
@@ -119,7 +117,6 @@ export class ClassService {
     });
   }
 
-  // Remove all students from a class
   async removeAllStudentsFromClass(classId: number) {
     const classData = await this.prismaService.class.findUnique({
       where: { id: classId },
@@ -136,7 +133,6 @@ export class ClassService {
     });
   }
 
-  // Assign a new teacher to a class
   async assignNewTeacherToClass(assignTeacherDto: AssignTeacherDto) {
     const { classId, teacherId } = assignTeacherDto;
 
