@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from 'src/student/student.module';
 import { NoteModule } from 'src/note/note.module';
 import { ClassModule } from 'src/class/class.module';
+import { AssigmentModule } from 'src/assigment/assigment.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ClassModule } from 'src/class/class.module';
     StudentModule,
     NoteModule,
     ClassModule,
+    AssigmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
