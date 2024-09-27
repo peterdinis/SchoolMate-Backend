@@ -16,7 +16,7 @@ import { ClassModule } from 'src/class/class.module';
     }),
     StudentModule,
     NoteModule,
-    ClassModule
+    ClassModule,
   ],
   controllers: [AppController],
   providers: [AppService],
