@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE "Assigment" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "desc" TEXT NOT NULL,
+    "deadline" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Assigment_pkey" PRIMARY KEY ("id")
+);
