@@ -110,17 +110,17 @@ export class TeacherService {
     const oneTeacher = await this.findOneTeacher(id);
 
     const updateTeacherProfile = await this.prismaService.teacher.update({
-        where: {
-            id: oneTeacher.id
-        },
+      where: {
+        id: oneTeacher.id,
+      },
 
-        data: {
-            ...updateProfile
-        }
+      data: {
+        ...updateProfile,
+      },
     });
 
-    if(!updateTeacherProfile) {
-        throw new ForbiddenException("Failed to update teacher");
+    if (!updateTeacherProfile) {
+      throw new ForbiddenException('Failed to update teacher');
     }
 
     return updateTeacherProfile;
