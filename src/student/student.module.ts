@@ -11,8 +11,8 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     PrismaModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET_KEY, // replace with a secure key in production
-      signOptions: { expiresIn: '1h' }, // token expiry time
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   providers: [StudentService, JwtStrategy],
