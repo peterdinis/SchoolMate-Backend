@@ -4,6 +4,7 @@ import { TeacherService } from './teacher.service';
 import { TeacherController } from './teacher.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PassportModule } from '@nestjs/passport';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [TeacherService],
+  providers: [TeacherService, JwtStrategy],
   controllers: [TeacherController],
 })
 export class TeacherModule {}
