@@ -6,6 +6,6 @@ import { AssigmentController } from './assigment.controller';
 @Module({
   imports: [PrismaModule],
   providers: [AssignmentService],
-  controllers: [AssigmentController]
+  controllers: [AssigmentController],
 })
 export class AssigmentModule {}
