@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { RegisterTeacherDto } from './dto/register-teacher.dto';
 import { LoginTeacherDto } from './dto/login-teacher.dto';
+import { UpdateTeacherDto } from './dto/update-teacher.dto';
 
 @Injectable()
 export class TeacherService {
@@ -103,5 +104,25 @@ export class TeacherService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async updateProfile(id: number, updateProfile: UpdateTeacherDto) {
+    const oneTeacher = await this.findOneTeacher(id);
+
+    const updateTeacherProfile = await this.prismaService.teacher.update({
+        where: {
+            id: oneTeacher.id
+        },
+
+        data: {
+            ...updateProfile
+        }
+    });
+
+    if(!updateTeacherProfile) {
+        throw new ForbiddenException("Failed to update teacher");
+    }
+
+    return updateTeacherProfile;
   }
 }
