@@ -88,7 +88,9 @@ describe('AssignmentService', () => {
     it('should throw a NotFoundException if the assignment does not exist', async () => {
       // Explicitly type the mock to return null
       (prismaService.assigment.findUnique as jest.Mock).mockResolvedValue(null);
-      await expect(service.findOneAssignment(99)).rejects.toThrow(NotFoundException);
+      await expect(service.findOneAssignment(99)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -109,14 +111,18 @@ describe('AssignmentService', () => {
 
     it('should throw a NotFoundException if the assignment does not exist', async () => {
       (prismaService.assigment.findUnique as jest.Mock).mockResolvedValue(null);
-      await expect(service.updateAssignment(99, {})).rejects.toThrow(NotFoundException);
+      await expect(service.updateAssignment(99, {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('deleteAssignment', () => {
     it('should delete an existing assignment', async () => {
       const result = await service.deleteAssignment(1);
-      expect(result).toEqual({ message: `Assignment with ID 1 deleted successfully` });
+      expect(result).toEqual({
+        message: `Assignment with ID 1 deleted successfully`,
+      });
       expect(prismaService.assigment.delete).toHaveBeenCalledWith({
         where: { id: 1 },
       });
@@ -124,7 +130,9 @@ describe('AssignmentService', () => {
 
     it('should throw a NotFoundException if the assignment does not exist', async () => {
       (prismaService.assigment.findUnique as jest.Mock).mockResolvedValue(null);
-      await expect(service.deleteAssignment(99)).rejects.toThrow(NotFoundException);
+      await expect(service.deleteAssignment(99)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

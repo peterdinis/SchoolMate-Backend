@@ -79,7 +79,10 @@ describe('AssignmentController', () => {
         limit: 10,
         total: 1,
       });
-      expect(service.getAssignments).toHaveBeenCalledWith(paginationDto, searchDto);
+      expect(service.getAssignments).toHaveBeenCalledWith(
+        paginationDto,
+        searchDto,
+      );
     });
   });
 
