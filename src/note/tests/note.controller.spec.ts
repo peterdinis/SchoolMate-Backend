@@ -74,7 +74,11 @@ describe('NoteController', () => {
 
   describe('createNote', () => {
     it('should create a new note', async () => {
-      const createNoteDto: CreateNoteDto = { name: 'New Note', content: 'Content', studentId: 1 };
+      const createNoteDto: CreateNoteDto = {
+        name: 'New Note',
+        content: 'Content',
+        studentId: 1,
+      };
       const result = { id: 1, ...createNoteDto };
       jest.spyOn(noteService, 'createNote').mockResolvedValue(result);
 
@@ -86,7 +90,10 @@ describe('NoteController', () => {
   describe('updateNote', () => {
     it('should update an existing note by id', async () => {
       const id = 1;
-      const updateNoteDto: UpdateNoteDto = { name: 'Updated Note', content: 'Updated Content' };
+      const updateNoteDto: UpdateNoteDto = {
+        name: 'Updated Note',
+        content: 'Updated Content',
+      };
       const result = { id, ...updateNoteDto };
       jest.spyOn(noteService, 'updateNote').mockResolvedValue(result);
 
@@ -110,10 +117,16 @@ describe('NoteController', () => {
       const studentId = 1;
       const paginationDto: PaginationNoteDto = { page: 1, pageSize: 5 };
       const result = [{ id: 1, name: 'Test Note', content: 'Content' }];
-      jest.spyOn(noteService, 'paginatedStudentNotes').mockResolvedValue(result);
+      jest
+        .spyOn(noteService, 'paginatedStudentNotes')
+        .mockResolvedValue(result);
 
-      expect(await controller.paginatedStudentNotes(studentId, paginationDto)).toBe(result);
-      expect(noteService.paginatedStudentNotes).toHaveBeenCalledWith(paginationDto);
+      expect(
+        await controller.paginatedStudentNotes(studentId, paginationDto),
+      ).toBe(result);
+      expect(noteService.paginatedStudentNotes).toHaveBeenCalledWith(
+        paginationDto,
+      );
     });
   });
 
@@ -124,7 +137,9 @@ describe('NoteController', () => {
       const result = [{ id: 1, name: 'Test Note', content: 'Content' }];
       jest.spyOn(noteService, 'searchStudentNote').mockResolvedValue(result);
 
-      expect(await controller.searchStudentNote(studentId, searchDto)).toBe(result);
+      expect(await controller.searchStudentNote(studentId, searchDto)).toBe(
+        result,
+      );
       expect(noteService.searchStudentNote).toHaveBeenCalledWith(searchDto);
     });
   });
