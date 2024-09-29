@@ -41,7 +41,9 @@ describe('ClassController', () => {
   describe('displayAllClasses', () => {
     it('should return an array of classes', async () => {
       const mockClasses = [{ id: 1, name: 'Class A' }];
-      (classService.displayAllClasses as jest.Mock).mockResolvedValue(mockClasses);
+      (classService.displayAllClasses as jest.Mock).mockResolvedValue(
+        mockClasses,
+      );
 
       const result = await classController.displayAllClasses();
       expect(result).toEqual(mockClasses);
@@ -74,13 +76,20 @@ describe('ClassController', () => {
 
   describe('addStudentsToClass', () => {
     it('should add students to a class', async () => {
-      const addStudentsDto: AddStudentsToClassDto = { classId: 1, studentIds: [1, 2] };
+      const addStudentsDto: AddStudentsToClassDto = {
+        classId: 1,
+        studentIds: [1, 2],
+      };
       const mockClass = { id: 1, name: 'Class A', students: [1, 2] };
-      (classService.addStudentsToClass as jest.Mock).mockResolvedValue(mockClass);
+      (classService.addStudentsToClass as jest.Mock).mockResolvedValue(
+        mockClass,
+      );
 
       const result = await classController.addStudentsToClass(addStudentsDto);
       expect(result).toEqual(mockClass);
-      expect(classService.addStudentsToClass).toHaveBeenCalledWith(addStudentsDto);
+      expect(classService.addStudentsToClass).toHaveBeenCalledWith(
+        addStudentsDto,
+      );
     });
   });
 
@@ -99,7 +108,9 @@ describe('ClassController', () => {
   describe('removeStudentFromClass', () => {
     it('should remove a student from a class', async () => {
       const mockResponse = { success: true };
-      (classService.removeStudentFromClass as jest.Mock).mockResolvedValue(mockResponse);
+      (classService.removeStudentFromClass as jest.Mock).mockResolvedValue(
+        mockResponse,
+      );
 
       const result = await classController.removeStudentFromClass(1, 1);
       expect(result).toEqual(mockResponse);
@@ -110,7 +121,9 @@ describe('ClassController', () => {
   describe('removeAllStudentsFromClass', () => {
     it('should remove all students from a class', async () => {
       const mockResponse = { success: true };
-      (classService.removeAllStudentsFromClass as jest.Mock).mockResolvedValue(mockResponse);
+      (classService.removeAllStudentsFromClass as jest.Mock).mockResolvedValue(
+        mockResponse,
+      );
 
       const result = await classController.removeAllStudentsFromClass(1);
       expect(result).toEqual(mockResponse);
@@ -122,11 +135,16 @@ describe('ClassController', () => {
     it('should assign a new teacher to a class', async () => {
       const assignTeacherDto: AssignTeacherDto = { classId: 1, teacherId: 2 };
       const mockClass = { id: 1, name: 'Class A', teacherId: 2 };
-      (classService.assignNewTeacherToClass as jest.Mock).mockResolvedValue(mockClass);
+      (classService.assignNewTeacherToClass as jest.Mock).mockResolvedValue(
+        mockClass,
+      );
 
-      const result = await classController.assignNewTeacherToClass(assignTeacherDto);
+      const result =
+        await classController.assignNewTeacherToClass(assignTeacherDto);
       expect(result).toEqual(mockClass);
-      expect(classService.assignNewTeacherToClass).toHaveBeenCalledWith(assignTeacherDto);
+      expect(classService.assignNewTeacherToClass).toHaveBeenCalledWith(
+        assignTeacherDto,
+      );
     });
   });
 });

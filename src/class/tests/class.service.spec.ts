@@ -36,7 +36,9 @@ describe('ClassService', () => {
       const mockClass = { id: 1, name: 'Class A', students: [], teacher: {} };
 
       // Mocking Prisma class.findUnique to return a class
-      (prismaService.class.findUnique as jest.Mock).mockResolvedValue(mockClass);
+      (prismaService.class.findUnique as jest.Mock).mockResolvedValue(
+        mockClass,
+      );
 
       const result = await classService.findOneClass(1);
       expect(result).toEqual(mockClass);
@@ -58,7 +60,9 @@ describe('ClassService', () => {
       const mockClass = { id: 1, name: 'Class A', teacherId: 1 };
 
       // Mocking Prisma teacher.findUnique and class.create
-      (prismaService.teacher.findUnique as jest.Mock).mockResolvedValue(mockTeacher);
+      (prismaService.teacher.findUnique as jest.Mock).mockResolvedValue(
+        mockTeacher,
+      );
       (prismaService.class.create as jest.Mock).mockResolvedValue(mockClass);
 
       const createClassDto = { name: 'Class A', teacherId: 1 };
